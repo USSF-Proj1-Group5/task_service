@@ -1,25 +1,22 @@
-const fs = require("fs")
+const express = require('express')
 const bodyParser = require("body-parser")
 
-const express = require('express')
 const app = express()
-const port = 3001
+const port = 2222
 
 const Pool = require('pg').Pool;
 const pool = new Pool({
     user: 'admin',
     host: 'database',
-    database: 'emails',
+    database: 'task_db',
     password: 'admin',
     port: 5432,
 })
 
 app.use(bodyParser.json())
 
-// const emails = JSON.parse(fs.readFileSync("emails.JSON"))
-
-app.get('/emails', (req, res) => {
-    pool.query('SELECT * FROM emails', (error, results) => {
+app.get('/tasks', (req, res) => {
+    pool.query('SELECT * FROM task_db', (error, results) => {
         if (error) {
             throw error;
         }
@@ -39,7 +36,7 @@ app.get('/emails', (req, res) => {
 //     res.status(200).json("finished");
 // })
 
-
+/*
 app.get('/emails/:id', (req, res) => {
     pool.query('SELECT * FROM emails WHERE id = $1', [req.params.id], (error, results) => {
         if (error) {
@@ -82,5 +79,5 @@ app.post('/send', function (req, res) {
     res.json(result);
 });
 
-
+*/
 app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`))

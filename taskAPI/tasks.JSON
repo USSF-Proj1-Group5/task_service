@@ -1,0 +1,4 @@
+[ {"task": "Roof Repair", "category": "Roof", "recurrence": 15, "last_serviced": "2020-08-23", "user_id": 2},
+    {"task": "Hot Water Heater", "category": "Appliance", "recurrence": 10, "last_serviced": "2020-05-13", "user_id": 2},
+    {"task": "Garbage Disposal", "category": "Plumbing", "recurrence": 8, "last_serviced": "2020-07-22", "user_id": 3},
+    {"task": "Circuit Breaker", "category": "Electrician", "recurrence": 15, "last_serviced": "2020-05-13", "user_id": 2}]

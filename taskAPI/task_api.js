@@ -1,15 +1,15 @@
-const fs = require("fs")
+//const fs = require("fs")
 const bodyParser = require("body-parser")
 const express = require('express')
-var cookieParser = require('cookie-parser')
-const { toNamespacedPath } = require("path")
+// var cookieParser = require('cookie-parser')
+// const { toNamespacedPath } = require("path")
 
 const app = express()
 const port = 2222
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
-app.use(cookieParser())
+// app.use(cookieParser())
 
 var movies = JSON.parse(fs.readFileSync('./movies.JSON'))
 
