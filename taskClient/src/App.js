@@ -6,17 +6,23 @@ class App extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      taskList: ['task1', 'task2', 'task3', 'task4', 'task5', 'task6'],
+      taskList: [],
       currentTask: '',
     }
   }
 
-  // async componentDidMount() {
-  //   const response = await fetch('http://localhost:3001/service_requests');
-  //   const json = await response.json();
-  //   //const importServiceRequests = json.sort((a, b) => new Date(b.date) - new Date(a.date));
-  //   this.setState({ listSR: this.state.listSR.concat(json) });
-  // }
+  async componentDidMount() {
+    const taskList = await this.getTaskList();
+    this.setState({ taskList: this.state.taskList.concat(taskList)});
+  }
+
+  async getTaskList() { 
+    const response = await fetch('http://localhost:3001/tasks');
+    const json = await response.json();
+    console.log(json)
+    //this.setState({ taskList: json});
+    return json
+  }
 
   getCurrentTask = (event) => {
     this.setState({currentTask: event.target.value})
@@ -40,14 +46,37 @@ class App extends React.Component {
   }
 
   displayTasks = () => {
+    var displayTasks = this.state.taskList.map(each => {
+      return ( <tr>
+                  <td>{each.name}</td>
+                  <td>{each.category}</td>
+                  <td>{each.recurrence}</td>
+                  <td>{each.last_serviced}</td>
+                  <td><button name={each.id} onClick={this.deleteTask}>Delete</button></td>
+      </tr>
+
+      )
+    })
     return (
       <div>
-        <h1>Maintenance Tasks</h1>
-        <ul>
-          {this.state.taskList.map(task => <li>{task}
+        <h1>Task List</h1>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Categroy</th>
+              <th>Recurrence</th>
+              <th>Last Serviced Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {displayTasks}
+          </tbody>
+
+          {/* {this.state.taskList.map(task => <li>{task.id}
                                             <button name={task} onClick={this.deleteTask}>Delete</button>
-                                            </li>)}
-        </ul>
+                                            </li>)} */}
+        </table>
       </div>
     )
   }
@@ -56,7 +85,8 @@ class App extends React.Component {
     return (
       <div className="App">
         <header className="App-header">
-          <input onChange={this.getCurrentTask} />
+          <input placeholder="Enter Task" onChange={this.getCurrentTask} />
+          <input placeholder="Enter Category" onChange={this.getCurrentTask} />
           <button onClick={this.addTask}>Add Task</button>
           {this.displayTasks()}
         </header>

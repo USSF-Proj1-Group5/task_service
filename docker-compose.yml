@@ -6,8 +6,8 @@ services:
     depends_on:
       - 'database'
     ports: 
-      - '2000:2222'
-      volumes:
+      - '3001:3001'
+    volumes:
       - ./taskapi:/src/app
 
   client:
@@ -15,7 +15,7 @@ services:
     depends_on:
       - 'database'
     ports:
-      - '1000:1111'
+      - '3000:3000'
     volumes:
       - ./taskclient:/src/app
 
@@ -23,7 +23,7 @@ services:
     image: postgres:latest
     restart: always
     ports:
-      - '3000:3333'
+      - '5432:5432'
     environment:
       - POSTGRES_DB=tasks_db
       - POSTGRES_USER=admin
