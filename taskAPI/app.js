@@ -1,9 +1,13 @@
 const fs = require("fs")
 const express = require('express')
 const bodyParser = require("body-parser")
+const cors = require('cors')
 
 const app = express()
 const port = 3001
+
+app.use(cors())
+app.options('*', cors())
 
 const Pool = require('pg').Pool;
 const pool = new Pool({
@@ -12,7 +16,7 @@ const pool = new Pool({
     database: 'tasks_db',
     password: 'admin',
     port: 5432,
-})
+}) 
 
 app.use(bodyParser.json())
 
@@ -33,9 +37,14 @@ app.get('/tasks', (req, res) => {
 })
 
 
-app.post('/add_task', (req, res) => {
+app.post('/addTask', (req, res) => {
     let result;
-    if(req.body.name && req.body.category && req.body.recurrence && req.body.last_serviced){
+    if(req.body.name /*&& req.body.category && req.body.recurrence && req.body.last_serviced*/){
+        console.log(req.body.last_serviced)
+        console.log(req.body.name)
+        console.log(req.body.category)
+        console.log(req.body.recurrence)
+
         pool.query('INSERT INTO tasks_table (name, category, recurrence, last_serviced) VALUES ($1, $2, $3, $4)', 
         [req.body.name, req.body.category, req.body.recurrence, req.body.last_serviced], (error, results) => {
             if (error) {
@@ -55,6 +64,24 @@ app.post('/add_task', (req, res) => {
         }
         res.status(400).send(result)
 
+    }
+})
+ 
+app.delete('/deleteTask', (req, res) => {
+    let result;
+    if(req.body.id){
+        pool.query('DELETE FROM tasks_table WHERE id IN ($1)', [req.body.id], (error, results) => {
+            if(error){
+                throw error
+            }
+        })
+        result = {
+            "status": "success",
+            "message": "The task was successfully deleted"
+        }
+        res.status(200).send(results);
+    } else {
+        res.status(400).send('not deleted')
     }
 })
 
