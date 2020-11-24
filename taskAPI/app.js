@@ -38,10 +38,10 @@ app.get('/tasks', (req, res) => {
 
 app.post('/addTask', (req, res) => {
     let result;
-    if(/*req.body.name && req.body.category && */req.body.recurrence /*&& req.body.last_serviced*/){
+    if(req.body.name && req.body.category && req.body.recurrence && req.body.last_serviced){
         
-        pool.query('INSERT INTO tasks_table (name, category, recurrence, last_serviced) VALUES ($1, $2, $3, $4)', 
-        [req.body.name, req.body.category, req.body.recurrence, req.body.last_serviced], (error, result) => {
+        pool.query('INSERT INTO tasks_table (name, category, recurrence, last_serviced, user_id) VALUES ($1, $2, $3, $4, $5)', 
+        [req.body.name, req.body.category, req.body.recurrence, req.body.last_serviced, req.body.user_id], (error, result) => {
             if (error) {
                 throw error;
             }
@@ -67,7 +67,7 @@ app.post('/addTask', (req, res) => {
 })
  
 app.delete('/deleteTask', (req, res) => {
-    let result;
+    let results;
     if(req.body.id){
         pool.query('DELETE FROM tasks_table WHERE id IN ($1)', [req.body.id], (error, results) => {
             if(error){

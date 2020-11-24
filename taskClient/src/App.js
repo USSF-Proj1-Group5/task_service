@@ -1,7 +1,9 @@
-import React from 'react'
+//import React from 'react'
+import React, { useState, useEffect } from "react";
 import './App.css';
 import DisplayTasks from './DisplayTasks';
 import AddTask from './AddTask';
+import AdminTasks from './adminTasks';
 const urlAPI = 'http://localhost:3001'
 
 class App extends React.Component {
@@ -13,17 +15,29 @@ class App extends React.Component {
                   currentCategory: '',
                   currentRecurrence: '',
                   currentServicedDate: '',
+                  currentUser: '',
                   taskList: [],
                   toRender: true,
                   }
   }
 
-
   async componentDidMount() {
+    const database = await this.getTaskList();
+    this.setState({ taskList: database,
+                      toRender: false });
+  }
+  
+  async getTaskList() {
     const response = await fetch(`${urlAPI}/tasks`);
     const json = await response.json();
-    this.setState({ taskList: json,
-                      toRender: false });
+    return json;
+  }
+  
+  async componentDidUpdate(prevProps, prevState) {
+    if(prevProps.taskList !== this.props.taskList){
+      const newTaskList = await this.getTaskList();
+      this.setState({ taskList: this.state.taskList.concat(newTaskList) });
+    }
   }
 
   handleCurrentTaskName = (event) => {
@@ -41,40 +55,47 @@ class App extends React.Component {
   handleCurrentServicedDate = (event) => {
     this.setState({currentServicedDate: event.target.value})
   }
+
+  handleCurrentUser = (event) => {
+    this.setState({currentUser: event.target.value})
+  }
  
   handleAddTask = async(event) => {
     let addTask = { name: this.state.currentTaskName,
                     category: this.state.currentCategory,
                     recurrence: this.state.currentRecurrence,
-                    serviced_date: this.state.currentServicedDate,
+                    last_serviced: this.state.currentServicedDate,
+                    user_id: this.state.currentUser,
                   }
                   //console.log(addTask)
       this.addTask(addTask);
-      this.setState({toRender: true})
-    
-    // let newList = this.state.taskList;
-    // newList.push({
-    //               name: this.state.currentTask.name,
-    //               category: this.state.currentTask.category,
-    //               recurrence: this.state.currentTask.recurrence,
-    //               last_serviced: this.state.currentTask.last_serviced,
-    //               })
-    // this.setState({taskList: newList})
-  }
-
-  addTask = async(body) => {
-    //console.log(body)
-    const requestOptions = {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(body)
-    };
-    await fetch(`${urlAPI}/addTask`, requestOptions)
-        .then(response => response.json())
+      // let newList = this.state.taskList;
+      // newList.push({
+        //               name: this.state.currentTask.name,
+        //               category: this.state.currentTask.category,
+        //               recurrence: this.state.currentTask.recurrence,
+        //               last_serviced: this.state.currentTask.last_serviced,
+        //               })
+        // this.setState({taskList: newList})
+      }
+      
+      addTask = async(body) => {
+        // console.log(body)
+        const requestOptions = {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(body)
+        };
+        await fetch(`${urlAPI}/addTask`, requestOptions)
         .then(response => {
-          if(response.status === "failed")
-          alert(response.message)
+          response.json()
         })
+        // .then(response => {
+        //   if(response.status === "failed")
+        //   alert(response.message)
+        // })
+        
+        // this.setState({toRender: true})
   }
 
   handleDeleteTask = async(event) => {
@@ -109,12 +130,13 @@ class App extends React.Component {
 
   render () {
     return (
-      <div className="App">
+      <div>
         <AddTask  onCurrentTaskName={this.handleCurrentTaskName}
                   onCurrentCategory={this.handleCurrentCategory}
                   onCurrentRecurrence={this.handleCurrentRecurrence}
                   onCurrentServicedDate={this.handleCurrentServicedDate}
                   onAddTask={this.handleAddTask} />
+        <AdminTasks onUser={this.handleCurrentUser} />
         <header className="App-header">
           <DisplayTasks listTasks={this.state.taskList} onDeleteTask = {this.handleDeleteTask} />
         </header>
