@@ -24,7 +24,6 @@ var tasks = JSON.parse(fs.readFileSync('./tasks.JSON'))
 
 app.get('/test', (req, res) => {
         res.send(tasks)
-    
 })
 
 app.get('/tasks', (req, res) => {
@@ -39,14 +38,10 @@ app.get('/tasks', (req, res) => {
 
 app.post('/addTask', (req, res) => {
     let result;
-    if(req.body.name /*&& req.body.category && req.body.recurrence && req.body.last_serviced*/){
-        console.log(req.body.last_serviced)
-        console.log(req.body.name)
-        console.log(req.body.category)
-        console.log(req.body.recurrence)
-
+    if(/*req.body.name && req.body.category && */req.body.recurrence /*&& req.body.last_serviced*/){
+        
         pool.query('INSERT INTO tasks_table (name, category, recurrence, last_serviced) VALUES ($1, $2, $3, $4)', 
-        [req.body.name, req.body.category, req.body.recurrence, req.body.last_serviced], (error, results) => {
+        [req.body.name, req.body.category, req.body.recurrence, req.body.last_serviced], (error, result) => {
             if (error) {
                 throw error;
             }
@@ -57,6 +52,10 @@ app.post('/addTask', (req, res) => {
         }
         res.status(200).send(result)
     } else {
+        console.log(req.body.last_serviced)
+        console.log(req.body.name)
+        console.log(req.body.category)
+        console.log(req.body.recurrence)
         console.log(req.body.name)
         result = {
             "status": "failed",
