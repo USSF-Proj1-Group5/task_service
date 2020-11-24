@@ -1,5 +1,5 @@
-//import React from 'react'
-import React, { useState, useEffect } from "react";
+import React from 'react'
+//import React, { useState, useEffect } from "react";
 import './App.css';
 import DisplayTasks from './DisplayTasks';
 import AddTask from './AddTask';
@@ -8,6 +8,7 @@ const urlAPI = 'http://localhost:3001'
 
 class App extends React.Component {
   
+
   constructor (props) {
     super(props)
     this.state = {
@@ -23,7 +24,7 @@ class App extends React.Component {
 
   async componentDidMount() {
     const database = await this.getTaskList();
-    this.setState({ taskList: database,
+    this.setState({ taskList: this.state.taskList.concat(database),
                       toRender: false });
   }
   
@@ -69,6 +70,8 @@ class App extends React.Component {
                   }
                   //console.log(addTask)
       this.addTask(addTask);
+     // event.target.reset();
+      this.setState({taskList: this.state.taskList.concat(addTask)})
       // let newList = this.state.taskList;
       // newList.push({
         //               name: this.state.currentTask.name,
@@ -79,6 +82,7 @@ class App extends React.Component {
         // this.setState({taskList: newList})
       }
       
+
       addTask = async(body) => {
         // console.log(body)
         const requestOptions = {
@@ -103,7 +107,8 @@ class App extends React.Component {
       id: event.target.value
     }
     console.log(deleteTask)
-    this.deleteTask(deleteTask)
+    this.deleteTask(deleteTask);
+    this.componentDidUpdate(this.state.taskList)
     // let newList = this.state.taskList
     // let taskIndex = newList.indexOf(event.target.name)
     // newList.splice(taskIndex, 1)

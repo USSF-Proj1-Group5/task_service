@@ -65,10 +65,29 @@ app.post('/addTask', (req, res) => {
 
     }
 })
- 
+
 app.delete('/deleteTask', (req, res) => {
     let results;
-    if(req.body.id){
+    const id = req.body.id
+    // if(id){
+        pool.query('DELETE FROM tasks_table WHERE id IN ($1)', [id], (error, results) => {
+            if(error){
+                throw error
+            }
+            result = {
+                "status": "success",
+                "message": "The task was successfully deleted"
+            }
+            res.status(200).send(results);
+        })
+    // } else {
+    //     res.status(400).send('not deleted')
+    // }
+})
+
+app.delete('/deleteTask', (req, res) => {
+    let results;
+    //if(req.body.id){
         pool.query('DELETE FROM tasks_table WHERE id IN ($1)', [req.body.id], (error, results) => {
             if(error){
                 throw error
@@ -79,9 +98,9 @@ app.delete('/deleteTask', (req, res) => {
             "message": "The task was successfully deleted"
         }
         res.status(200).send(results);
-    } else {
-        res.status(400).send('not deleted')
-    }
+    // } else {
+    //     res.status(400).send('not deleted')
+    // }
 })
 
 /*
