@@ -52,11 +52,7 @@ app.post('/addTask', (req, res) => {
         }
         res.status(200).send(result)
     } else {
-        console.log(req.body.last_serviced)
-        console.log(req.body.name)
-        console.log(req.body.category)
-        console.log(req.body.recurrence)
-        console.log(req.body.name)
+
         result = {
             "status": "failed",
             "message": "The task was not added"
@@ -68,9 +64,9 @@ app.post('/addTask', (req, res) => {
 
 app.delete('/deleteTask', (req, res) => {
     let results;
-    const id = req.body.id
+    const id = parseInt(req.body.id);
     // if(id){
-        pool.query('DELETE FROM tasks_table WHERE id IN ($1)', [id], (error, results) => {
+        pool.query('DELETE FROM tasks_table WHERE id = $1', [id], (error, results) => {
             if(error){
                 throw error
             }
@@ -85,23 +81,23 @@ app.delete('/deleteTask', (req, res) => {
     // }
 })
 
-app.delete('/deleteTask', (req, res) => {
-    let results;
-    //if(req.body.id){
-        pool.query('DELETE FROM tasks_table WHERE id IN ($1)', [req.body.id], (error, results) => {
-            if(error){
-                throw error
-            }
-        })
-        result = {
-            "status": "success",
-            "message": "The task was successfully deleted"
-        }
-        res.status(200).send(results);
-    // } else {
-    //     res.status(400).send('not deleted')
-    // }
-})
+// app.delete('/deleteTask', (req, res) => {
+//     let results;
+//     //if(req.body.id){
+//         pool.query('DELETE FROM tasks_table WHERE id IN ($1)', [req.body.id], (error, results) => {
+//             if(error){
+//                 throw error
+//             }
+//         })
+//         result = {
+//             "status": "success",
+//             "message": "The task was successfully deleted"
+//         }
+//         res.status(200).send(results);
+//     // } else {
+//     //     res.status(400).send('not deleted')
+//     // }
+// })
 
 /*
 app.get('/emails/:id', (req, res) => {

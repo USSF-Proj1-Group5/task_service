@@ -37,7 +37,7 @@ class App extends React.Component {
   async componentDidUpdate(prevProps, prevState) {
     if(prevProps.taskList !== this.props.taskList){
       const newTaskList = await this.getTaskList();
-      this.setState({ taskList: this.state.taskList.concat(newTaskList) });
+      this.setState({ taskList: newTaskList });
     }
   }
 
@@ -69,9 +69,11 @@ class App extends React.Component {
                     user_id: this.state.currentUser,
                   }
                   //console.log(addTask)
-      this.addTask(addTask);
+      this.addTask(addTask)
+      .then(this.setState());
+      
      // event.target.reset();
-      this.setState({taskList: this.state.taskList.concat(addTask)})
+     // this.setState({taskList: this.state.taskList.concat(addTask)})
       // let newList = this.state.taskList;
       // newList.push({
         //               name: this.state.currentTask.name,
@@ -108,11 +110,11 @@ class App extends React.Component {
     }
     console.log(deleteTask)
     this.deleteTask(deleteTask);
-    this.componentDidUpdate(this.state.taskList)
-    // let newList = this.state.taskList
-    // let taskIndex = newList.indexOf(event.target.name)
-    // newList.splice(taskIndex, 1)
-    // this.setState({taskList: newList})
+    //this.componentDidUpdate(this.state.taskList)
+     let newList = this.state.taskList
+    let taskIndex = newList.indexOf(event.target.name)
+     newList.splice(taskIndex, 1)
+     this.setState({taskList: newList})
   }
 
   deleteTask = async(body) => {
